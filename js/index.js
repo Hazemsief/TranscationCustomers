@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const customersTable = document.getElementById('customers-body');
   const filterInput = document.getElementById('filter-input');
-  const transactionChartCtx = document.getElementById('transaction-chart').getContext('2d');
+  const transactionChartCtx = document.getElementById('transaction-chart-modal').getContext('2d');
 
   let transactionsData = [];
   let customersData = [];
@@ -9,12 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const fetchData = async () => {
     try {
-      const [transactionsRes, customersRes] = await Promise.all([
-        axios.get('https://my-json-server.typicode.com/Hazemsief/TransactionDataCustomers/transactions'),
-        axios.get('https://my-json-server.typicode.com/Hazemsief/TransactionDataCustomers/customers')
-      ]);
-      transactionsData = transactionsRes.data;
-      customersData = customersRes.data;
+      const response = await axios.get('https://my-json-server.typicode.com/Hazemsief/TransactionDataCustomers/db');
+      transactionsData = response.data.transactions;
+      customersData = response.data.customers;
       renderTable(transactionsData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -92,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (row) {
       const customerId = parseInt(row.children[0].textContent, 10);
       renderChart(customerId);
+      $('#transactionModal').modal('show'); 
     }
   });
 
